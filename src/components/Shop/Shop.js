@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
+import { faShoppingCart, faStar } from '@fortawesome/free-solid-svg-icons'
 import { addToDb, getStoredCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
@@ -38,7 +38,14 @@ const Shop = () => {
     }, [products]);
 
     const handleAddToCart = (product) => {
-        const newCart = [...cart, product];
+        const newCart = [...cart];
+        const existing = cart.find(c => c.key === product.key);
+        if (existing) {
+            product.quantity += 1
+        } else {
+            product.quantity = 1
+            newCart.push(product)
+        }
         setCart(newCart)
         addToDb(product.key)
     }
@@ -51,6 +58,7 @@ const Shop = () => {
     }
 
     const element = <FontAwesomeIcon icon={faShoppingCart} />
+
     return (
         <>
             <div className="search">
@@ -58,7 +66,8 @@ const Shop = () => {
                     onChange={handleSearch}
                     className="search-field"
                     type="text"
-                    placeholder="Type your search" />
+                    placeholder="Type your search"
+                />
                 <a className="cart-icon" href="">{element}</a>
             </div>
             <div className="shop-container">
